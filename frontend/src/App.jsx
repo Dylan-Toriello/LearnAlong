@@ -1,15 +1,22 @@
+import { Home } from "./pages/Home";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
-
-function App() {
+function AppWrapper() {
+  const location = useLocation();
 
   return (
-    <>
-      <h1 className="text-2xl font-bold underline">
-        Hello...
-      </h1>
-      <button class="btn btn-primary">Button</button>
-    </>
-  )
+    <Routes location={location} key={location.pathname}>
+      <Route path="/" element={<Home />} />
+    </Routes>
+  );
 }
 
-export default App
+function App() {
+  return (
+    <BrowserRouter>
+      <AppWrapper />
+    </BrowserRouter>
+  );
+}
+
+export default App;
