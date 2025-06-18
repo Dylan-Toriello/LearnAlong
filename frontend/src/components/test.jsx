@@ -1,52 +1,26 @@
 import { useEffect, useState } from "react";
 
 export const Navbar = () => {
-  const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem("theme") === "night";
-  });
+    const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
-    const theme = isDark ? "night" : "nord";
-    root.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    root.setAttribute("data-theme", isDark ? "night" : "nord");
   }, [isDark]);
 
   const toggleTheme = () => {
-    setIsDark((prev) => !prev);
+    setIsDark(prev => !prev);
   };
-
   return (
-    <div className="navbar shadow-sm px-4 md:px-[58px]">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <label tabIndex={0} className="btn btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </label>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52"
-          >
-            <li>
-              <a href="/">Home</a>
-              <a href="/about">About</a>
-            </li>
-          </ul>
-        </div>
-        <a className="btn btn-ghost text-xl" href="/">
-          Learn Along
-        </a>
+    <div className="navbar shadow-sm px-[58px]">
+      <div className="flex-1">
+        <a className="btn btn-ghost text-xl" href="/">Learn Along</a>
       </div>
-    
-      <div className="navbar-end">
+      <div className="flex-none flex items-center gap-4">
+        {/* ADD MENU LINKS IN THE NAVBAR HERE*/}
+        <ul className="menu links">
+          <li><a href = "/about">About</a></li>
+        </ul>
         <label className="toggle text-base-content">
           <input
             type="checkbox"

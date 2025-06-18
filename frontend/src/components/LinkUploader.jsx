@@ -1,17 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const LinkUploader = () => {
     const [url, setUrl] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Uploading:", url);
+        navigate("/watch", { state: { videoUrl: url } });
     };
 
     return (
-        <div className="flex h-full justify-center items-center overflow-hidden">
+        <div className="flex h-full justify-center items-center">
             <form className="join" onSubmit={handleSubmit}>
-                <label className="input input-primary validator join-item  w-[600px]">
+                <div>
+                <label className="input input-primary validator join-item w-[200px] md:w-[600px]">
                     <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <g
                             strokeLinejoin="round"
@@ -27,15 +30,39 @@ export const LinkUploader = () => {
                     <input
                         type="url"
                         required
-                        placeholder="Upload Youtube Video Link"
+                        placeholder="Upload Video Link"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
-                        pattern="^(https?://)?([a-zA-Z0-9]([a-zA-Z0-9\\-].*[a-zA-Z0-9])?\\.)+[a-zA-Z].*$"
+                        pattern="^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$"
                         title="Must be valid URL"
                     />
                 </label>
+                </div>
                 <button type="submit" className="btn btn-neutral join-item">Upload</button>
             </form>
         </div>
     );
 };
+
+
+<div className="join">
+  <div>
+    <label className="input validator join-item">
+      <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <g
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          strokeWidth="2.5"
+          fill="none"
+          stroke="currentColor"
+        >
+          <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+        </g>
+      </svg>
+      <input type="email" placeholder="mail@site.com" required />
+    </label>
+    <div className="validator-hint hidden">Enter valid email address</div>
+  </div>
+  <button className="btn btn-neutral join-item">Join</button>
+</div>

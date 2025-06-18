@@ -2,6 +2,7 @@ import { Home } from "./pages/Home";
 import { About } from "./pages/About";
 import { Navbar } from "./components/Navbar";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Watch } from "./pages/Watch";
 
 function AppWrapper() {
   const location = useLocation();
@@ -12,6 +13,7 @@ function AppWrapper() {
     <Routes location={location} key={location.pathname}>
       <Route path="/" element={<Home />} />
       <Route path = "/about" element={<About />} />
+      <Route path = "/watch" element = {<Watch />}/>
     </Routes>
     </>
     
