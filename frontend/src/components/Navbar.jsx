@@ -16,7 +16,11 @@ export const Navbar = () => {
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">Learn Along</a>
       </div>
-      <div className="flex-none">
+      <div className="flex-none flex items-center gap-4">
+        {/* ADD MENU LINKS IN THE NAVBAR HERE*/}
+        <ul className="menu links">
+          <li><a href = "\about">About</a></li>
+        </ul>
         <label className="toggle text-base-content">
           <input
             type="checkbox"
