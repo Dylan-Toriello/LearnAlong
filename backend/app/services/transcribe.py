@@ -1,22 +1,31 @@
-#backend/app/services/transcript.py
-
-from youtube_transcript_api import YoutubeTranscriptApi
+#For testing video id: YQHsXMglC9A, ua-CiDNNj30
+'''
+I tested it out with a three minute video and an hour long video and they both took the same time to fetch the transcript.
+It took approximately 1.20s everytime.
+'''
+from youtube_transcript_api import YouTubeTranscriptApi
 import logging
+import time
 
-def get_Transcript(video_id: str):
-    """
-    Fetches the transcript for a given YouTube video ID.
+logging.basicConfig(level=logging.INFO)
 
-    Args:
-        video_id (str): The YouTube video ID (e.g., 'dQw4w9WgXcQ').
+def get_Transcript(video_id):
+    start_time = time.time()  
 
-    Returns:
-        dict | None: A dictionary containing the transcript segments,
-                     or None if the transcript cannot be retrieved.
-                     Example format:
-                     [
-                         {'text': 'Hello,', 'start': 0.0, 'duration': 1.5},
-                         {'text': 'world!', 'start': 1.5, 'duration': 1.0},
-                         ...
-                     ]
-    """
+    try:
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        duration = time.time() - start_time
+        logging.info(f"Transcript fetched in {duration:.2f} seconds.")
+
+        for segment in transcript:
+            print(segment)
+            break
+
+        return transcript
+
+    except Exception as e:
+        logging.error(f"Failed to fetch transcript: {e}")
+        return None
+
+if __name__ == "__main__":
+    get_Transcript(video_id="ua-CiDNNj30")
