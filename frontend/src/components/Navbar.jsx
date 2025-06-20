@@ -20,7 +20,7 @@ export const Navbar = () => {
     <div className="navbar shadow-sm px-4 md:px-[58px]">
       <div className="navbar-start">
         <div className="dropdown">
-          <label tabIndex={0} className="btn btn-ghost lg:hidden">
+          <label tabIndex={0} className="btn btn-ghost ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -28,7 +28,12 @@ export const Navbar = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           </label>
           <ul
@@ -45,14 +50,10 @@ export const Navbar = () => {
           Learn Along
         </a>
       </div>
-    
+
       <div className="navbar-end">
         <label className="toggle text-base-content">
-          <input
-            type="checkbox"
-            checked={isDark}
-            onChange={toggleTheme}
-        />
+          <input type="checkbox" checked={isDark} onChange={toggleTheme} />
           <svg
             aria-label="sun"
             xmlns="http://www.w3.org/2000/svg"
