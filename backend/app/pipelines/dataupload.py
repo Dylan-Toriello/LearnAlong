@@ -1,6 +1,7 @@
 import logging 
 import langchain
 import tiktoken
+import time
 
 from ..services.transcribe import get_Transcript
 from ..services.vectorization import embed_texts
@@ -20,7 +21,7 @@ def chunk_transcript(raw_segments: list[dict], video_id: str, max_chunk_tokens: 
     #prepare raw segments as langchain objects
     documents =[]
     for i, segment in enumerate(raw_segments):
-        segment_metadata = { 
+        segment_metadata = {
             "video_id" : video_id,
             "segment_index": i,
             "start_time_original": segment['start'], # Keep original start time
@@ -60,9 +61,7 @@ def chunk_transcript(raw_segments: list[dict], video_id: str, max_chunk_tokens: 
 
 
 
-def dataUpload(video_id: str) -> str:
-    print("I GOT CALLED")
-    #fetch raw transcripts
+def dataUpload(video_id: str):
     raw_segments = get_Transcript(video_id)
 
     if not raw_segments:
@@ -90,18 +89,12 @@ def dataUpload(video_id: str) -> str:
         print(chunk['text'][:200] + "..." if len(chunk['text']) > 200 else chunk['text'])
     print("--- END SEGMENTED CHUNKS FOR VERIFICATION ---\n")
 
-
-
+    return chunks_data
 
 
 if __name__ == "__main__":
     test_video_id = "ua-CiDNNj30"
-
-    try:
-        result_message = dataUpload(test_video_id)
-        print(f"SUCCESS: {result_message}")
-    except Exception as e:
-        print(f"\n--- Test FAILED for {test_video_id} ---")
-        print(f"ERROR: {e}")
-        import traceback
-        traceback.print_exc()
+    start_time = time.time()  
+    chunks_data = dataUpload(test_video_id)
+    duration = time.time() - start_time
+    logging.info(f"Transcript chunked in {duration:.2f} seconds.")
