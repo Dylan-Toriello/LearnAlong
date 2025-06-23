@@ -69,7 +69,7 @@ def dataUpload(video_id: str) -> str:
         logging.warning("No Transcripts could be found")
         raise ValueError("Could not fetch transcripts for video")
 
-     # 2. Prepare Transcript for Chunking & Metadata
+    # 2. Prepare Transcript for Chunking & Metadata
     # Add video_id to each segment for potential use by chunk_id generation
     transcript_segments_with_id = [{**s, 'video_id': video_id} for s in raw_segments]
 
