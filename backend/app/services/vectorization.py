@@ -1,5 +1,5 @@
 # backend/app/services/vectorization.pyf
-rom sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer
 import logging
 import os
 
@@ -11,7 +11,7 @@ embedding_model = None
 
 
 #Function to load and return embedding model
-def get_embedding_model:
+def get_embedding_model():
 
     #Loads the sentence transformer model (or returns already loaded instance)
     #ensures that the model is only loaded once per application lifecycle
