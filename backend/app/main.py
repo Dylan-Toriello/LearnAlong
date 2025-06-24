@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
-from pipelines.dataupload import dataUpload
-from pipelines.chat import chat
-from pipelines.quiz import quiz
+from app.pipelines.dataupload import dataUpload
+from app.pipelines.chat import chat
+from app.pipelines.quiz import quiz
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
 
 @app.route("/upload_transcript", methods=["POST"])
 def upload_video():
@@ -20,7 +23,7 @@ def upload_video():
         return jsonify({"error": str(e)}), 500
 
 @app.route("/chat", methods=["POST"])
-def chat():
+def handle_chat():
     data = request.json
     question = data.get("question")
 
@@ -34,7 +37,7 @@ def chat():
         return jsonify({"error": str(e)}), 500
 
 @app.route("/quiz", methods=["POST"])
-def quiz():
+def handle_quiz():
     data = request.json
     video_id = data.get("video_id")
 

@@ -17,9 +17,9 @@ export const Navbar = () => {
   };
 
   return (
-    <div className="navbar px-4 md:px-[58px]">
+    <div className="navbar px-4 md:px-[58px] z-50">
       <div className="navbar-start">
-        <div className="dropdown">
+        <div className="dropdown relative z-50">
           <label tabIndex={0} className="btn btn-ghost ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,7 @@ export const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52"
+            className="menu menu-sm dropdown-content mt-3 z-[60] p-2 shadow rounded-box w-24 md:w-48"
           >
             <li>
               <a href="/">Home</a>
