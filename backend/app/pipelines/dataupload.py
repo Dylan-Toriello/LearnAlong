@@ -12,7 +12,7 @@ from langchain_core.documents import Document
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-format_document_for_db(chunks_data, video_id):
+def format_document_for_db(chunks_data, video_id)-> list[dict]:
     mongo_documents = []
     for i, chunk in enumerate(chunks_data):
         vector = {
@@ -110,12 +110,11 @@ def dataUpload(video_id: str):
 
     #add embeddings to chunk dictionary
     for i, chunk in enumerate(chunks_data):
-        chunk['embedding'] = ebmeddings[i]
+        chunk['embedding'] = embeddings[i]
 
 
     #combine all data for mongoDB
-    final_document = format_document_for_db(chunks_data)
-    print(final_document)
+    final_document = format_document_for_db(chunks_data, video_id)
 
 
     """
@@ -136,11 +135,10 @@ def dataUpload(video_id: str):
 
 
 
-"""
+
 if __name__ == "__main__":
     test_video_id = "ua-CiDNNj30"
     start_time = time.time()  
     chunks_data = dataUpload(test_video_id)
     duration = time.time() - start_time
     logging.info(f"Transcript chunked in {duration:.2f} seconds.")
-"""
