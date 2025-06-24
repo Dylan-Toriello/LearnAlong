@@ -103,7 +103,6 @@ def dataUpload(video_id: str):
 
     #combine all data for mongoDB
     fomatted_document = {
-        # "_id": ObjectId(), # MongoDB will generate this if not provided, often better to let it
         "video_id": video_id,
         "fullTranscript": full_transcript_text,
         "chunks" = chunks_data  
@@ -127,10 +126,11 @@ def dataUpload(video_id: str):
 
 
 
-
+"""
 if __name__ == "__main__":
     test_video_id = "ua-CiDNNj30"
     start_time = time.time()  
     chunks_data = dataUpload(test_video_id)
     duration = time.time() - start_time
     logging.info(f"Transcript chunked in {duration:.2f} seconds.")
+"""
