@@ -11,14 +11,14 @@ CORS(app)
 @app.route("/upload_transcript", methods=["POST"])
 def upload_video():
     data = request.json
-    video_id = data.get("video_id")
+    video_id = data.get("youtubeId")
 
     if not video_id:
         return jsonify({"error": "Missing video_id"}), 400
 
     try:
-        result = dataUpload(video_id)
-        return jsonify({"message": result}), 200
+        # result = dataUpload(video_id)
+        return jsonify({"chatId": "Dylan"}), 200 #just for testing
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

@@ -11,14 +11,27 @@ import {
 } from "lucide-react";
 
 export const ChatInterface = () => {
-  const [messages, setMessages] = useState([
-    {
-      id: "1",
-      text: "Hi! I'm here to help you learn from this video. Ask me anything about the content, or I can quiz you on what you've watched!",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState(() => {
+    const youtubeId = sessionStorage.getItem("youtubeId");
+    const saved = youtubeId && sessionStorage.getItem(`chatMessages_${youtubeId}`);
+      if (saved) return JSON.parse(saved);
+      return [
+        {
+          id: "1",
+          text: "Hi! I'm here to help you learn from this video. Ask me anything about the content, or I can quiz you on what you've watched!",
+          sender: "ai",
+        },
+      ];
+  });
+  useEffect(() => {
+    const youtubeId = sessionStorage.getItem("youtubeId");
+    if (youtubeId) {
+      const MAX_MESSAGES = 500;
+      const trimmedMessages = messages.slice(-MAX_MESSAGES);
+      sessionStorage.setItem(`chatMessages_${youtubeId}`, JSON.stringify(trimmedMessages));
+    }
+  }, [messages]);
+
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -56,7 +69,7 @@ export const ChatInterface = () => {
     const el = textareaRef.current;
     if (el) {
       el.style.height = "auto";
-      const maxHeight = 160; // ~5 lines
+      const maxHeight = 160;
       el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`;
       setIsTextareaOverflowing(el.scrollHeight > maxHeight);
     }
@@ -73,7 +86,6 @@ export const ChatInterface = () => {
       id: Date.now().toString(),
       text: inputText,
       sender: "user",
-      timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -81,12 +93,18 @@ export const ChatInterface = () => {
     setIsTyping(true);
     setShouldAutoScroll(true);
     setTimeout(() => scrollChatToBottom(), 100);
+    const chatId = sessionStorage.getItem("chatId");
+    const youtubeId = sessionStorage.getItem("youtubeId");
 
     try {
       const response = await fetch("http://127.0.0.1:5000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: userMessage.text }),
+        body: JSON.stringify({
+          question: userMessage.text,
+          chatId,
+          youtubeId,
+        }),
       });
 
       const data = await response.json();
@@ -94,7 +112,6 @@ export const ChatInterface = () => {
         id: (Date.now() + 1).toString(),
         text: data?.answer || "Sorry, no response received.",
         sender: "ai",
-        timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -103,7 +120,6 @@ export const ChatInterface = () => {
         id: (Date.now() + 2).toString(),
         text: "There was an error contacting the server.",
         sender: "ai",
-        timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -198,7 +214,7 @@ export const ChatInterface = () => {
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-xl border border-slate-200/50 flex flex-col w-full relative h-[400px] mb-8 md:mb-0"
+      className="bg-white rounded-2xl shadow-xl border border-slate-200/50 flex flex-col w-full relative h-[395px] mb-8 md:mb-0"
     >
       <div className="px-5 py-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-2xl flex-shrink-0">
         <div className="flex items-center space-x-3">

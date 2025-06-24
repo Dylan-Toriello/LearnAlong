@@ -1,16 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export const ActionButtons = ({ onQuizClick }) => {
+export const ActionButtons = ({ onQuizClick, onGoHomeClick }) => {
   const navigate = useNavigate();
 
   return (
     <>
       <button
         className="btn btn-sm sm:btn-md btn-neutral shadow-md z-[0] mr-[8px]"
-        onClick={() => navigate(-1)}
+        onClick={onGoHomeClick} 
       >
-        Go Back
+        Go Home
       </button>
       <button
         className="btn btn-sm sm:btn-md btn-primary shadow-md"

@@ -1,57 +1,83 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
 import { VideoPlayer } from "../components/VideoPlayer";
+import { ChatInterface } from "../components/Chatbox";
+import { ActionButtons } from "../components/ActionsButtons";
+import { LeaveSessionModal } from "../components/LeaveSessionModal"; 
 
 export const Watch = () => {
-  const location = useLocation();
-  const videoUrl = location.state?.videoUrl;
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const shouldNavigateBack = useRef(false); 
+  const [pendingAction, setPendingAction] = useState(null); 
 
-  const getYouTubeId = (url) => {
-    try {
-      const urlObj = new URL(url);
-      const idFromSearch = urlObj.searchParams.get("v");
-      if (idFromSearch) return idFromSearch;
-
-      if (urlObj.hostname === "youtu.be") {
-        return urlObj.pathname.slice(1);
-      }
-
-      const parts = urlObj.pathname.split("/");
-      return parts.includes("embed") ? parts[parts.length - 1] : null;
-    } catch (err) {
-      return null;
+useEffect(() => {
+  const handlePopState = () => {
+    if (shouldNavigateBack.current) {
+      shouldNavigateBack.current = false; 
+      return;
     }
+
+    setShowLeaveModal(true);
+
+    window.history.pushState(null, "", window.location.pathname);
   };
 
-  const videoId = getYouTubeId(videoUrl);
+  window.history.pushState(null, "", window.location.pathname);
+  window.addEventListener("popstate", handlePopState);
 
-  // useEffect(() => {
-  //   const sendURLtoBackend = async () => {
-  //     if (!videoId) return;
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, []);
 
-  //     try {
-  //       const response = await fetch("http://localhost:5000/process-video", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ videoId }),
-  //       });
 
-  //       const data = await response.json();
-  //       console.log("Backend response:", data);
-  //     } catch (error) {
-  //       console.error("Error sending video ID to backend:", error);
-  //     }
-  //   };
+  const handleStay = (e) => {
+    e.preventDefault();
+    setShowLeaveModal(false);
+    setShouldNavigateBack(false);
+    window.history.pushState(null, "", window.location.pathname);
+  };
 
-  //   sendURLtoBackend();
-  // }, [videoId]);
-  console.log(videoId);
+  const handleLeave = (e) => {
+    e.preventDefault();
+    setShowLeaveModal(false);
+    shouldNavigateBack.current = true;
+
+    window.history.back();
+  };
+
+  const handleGoHomeClick = () => {
+    setPendingAction("home");
+    setShowLeaveModal(true);
+  };
+
+
+  const videoId = sessionStorage.getItem("youtubeId");
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 text-center">
-      <VideoPlayer videoId={videoId} />
+    <div className="min-h-screen from-slate-50 pt-8 bg-base-100 px-5 md:px-[64px] overflow-visible">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex justify-end items-center mb-10">
+          <ActionButtons onGoHomeClick={handleGoHomeClick} />
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+          <div className="xl:col-span-2">
+            <VideoPlayer videoId={videoId} />
+          </div>
+          <div className="xl:col-span-1">
+            <div className="sticky top-8">
+              <ChatInterface />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ✅ Modal rendered here */}
+      <LeaveSessionModal
+        show={showLeaveModal}
+        onStay={handleStay}
+        onLeave={handleLeave}
+      />
     </div>
   );
 };

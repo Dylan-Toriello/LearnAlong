@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RotateCw } from "lucide-react"; 
+import { LeaveSessionModal } from "../components/LeaveSessionModal";
 
 export const QuizPage = () => {
   const [activeTab, setActiveTab] = useState("quiz");
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [pendingAction, setPendingAction] = useState(null); 
   const navigate = useNavigate();
 
   const sampleQuestions = [
@@ -62,6 +65,22 @@ export const QuizPage = () => {
     }));
   };
 
+  const handleGoHomeClick = () => {
+    setPendingAction("home");
+    setShowLeaveModal(true);
+  };
+  const handleStay = () => {
+    setShowLeaveModal(false);
+    setPendingAction(null);
+  };
+
+  const handleLeave = () => {
+    setShowLeaveModal(false);
+    if (pendingAction === "home") {
+      navigate("/"); 
+    }
+  };
+
   const handleReset = () => {
     setSelectedAnswers({});
   };
@@ -111,20 +130,20 @@ export const QuizPage = () => {
 
         <div className="flex justify-center items-center mb-6 space-x-4">
           <button
-            className={`px-5 py-2 rounded-lg font-medium shadow-sm transition-all ${
+            className={`btn ${
               activeTab === "quiz"
-                ? "bg-blue-600 text-white"
-                : "bg-slate-100 hover:bg-slate-200 text-black"
+                ? "btn-primary"
+                : "btn-neutral"
             }`}
             onClick={() => setActiveTab("quiz")}
           >
             Normal Quiz
           </button>
           <button
-            className={`px-5 py-2 rounded-lg font-medium shadow-sm transition-all${
+            className={`btn ${
               activeTab === "reinforcement"
-                ? "bg-blue-600 text-white"
-                : "bg-slate-100 hover:bg-slate-200 text-black"
+                ?  "btn-primary"
+                : "btn-neutral"
             }`}
             onClick={() => setActiveTab("reinforcement")}
           >
@@ -153,11 +172,16 @@ export const QuizPage = () => {
         </button>
         <button
             className="btn btn-sm sm:btn-md btn-neutral shadow-md z-[0] mr-[8px]"
-          onClick={() => navigate("/")}
+          onClick={handleGoHomeClick}
         >
           Go Home
         </button>
       </div>
+      <LeaveSessionModal
+              show={showLeaveModal}
+              onStay={handleStay}
+              onLeave={handleLeave}
+      />
     </div>
   );
 };

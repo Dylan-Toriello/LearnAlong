@@ -5,10 +5,55 @@ export const LinkUploader = () => {
   const [url, setUrl] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate("/watch", { state: { videoUrl: url } });
-  };
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      const videoId = getYouTubeId(url);
+
+      if (!videoId) {
+        alert("Invalid YouTube URL");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://127.0.0.1:5000/upload_transcript", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ youtubeId: videoId }),
+        });
+
+        const data = await res.json();
+
+        if (data.chatId) {
+          const oldYoutubeId = sessionStorage.getItem("youtubeId");
+          sessionStorage.removeItem("youtubeId");
+          sessionStorage.removeItem("chatId");
+          sessionStorage.removeItem(`chatMessages_${oldYoutubeId}`);
+
+          sessionStorage.setItem("youtubeId", videoId);
+          sessionStorage.setItem("chatId", data.chatId);
+          navigate("/watch");
+        } else {
+          alert("Could not start session");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Server error starting session");
+      }
+    };
+
+    const getYouTubeId = (url) => {
+        try {
+          const urlObj = new URL(url);
+          const idFromSearch = urlObj.searchParams.get("v");
+          if (idFromSearch) return idFromSearch;
+          if (urlObj.hostname === "youtu.be") return urlObj.pathname.slice(1);
+          const parts = urlObj.pathname.split("/");
+          return parts.includes("embed") ? parts[parts.length - 1] : null;
+        } catch (err) {
+          return null;
+        }
+      };
 
   return (
     <form
