@@ -12,6 +12,18 @@ from langchain_core.documents import Document
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
+format_document_for_db(chunks_data, video_id):
+    mongo_documents = []
+    for i, chunk in enumerate(chunks_data):
+        vector = {
+            "video_id": video_id,
+            "chunk_index": i,
+            "text": chunk["text"],
+            "embedding": chunk["embedding"]
+        }
+        mongo_documents.append(vector)
+    return mongo_documents
+
 
 def chunk_transcript(raw_segments: list[dict], video_id: str, max_chunk_tokens: int =250, overlap_tokens: int = 50) -> list[dict]:
     if not raw_segments:
@@ -102,11 +114,9 @@ def dataUpload(video_id: str):
 
 
     #combine all data for mongoDB
-    fomatted_document = {
-        "video_id": video_id,
-        "fullTranscript": full_transcript_text,
-        "chunks" = chunks_data  
-    }
+    final_document = format_document_for_db(chunks_data)
+    print(final_document)
+
 
     """
     #save entire document by calling a function in mongo.py
