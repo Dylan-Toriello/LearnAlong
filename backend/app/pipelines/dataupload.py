@@ -62,7 +62,7 @@ def chunk_transcript(raw_segments: list[dict], video_id: str, max_chunk_tokens: 
 
 
 def dataUpload(video_id: str):
-    raw_segments = get_Transcript(video_id)
+    full_transcript = raw_segments = get_Transcript(video_id)
 
     if not raw_segments:
         logging.warning("No Transcripts could be found")
@@ -79,17 +79,53 @@ def dataUpload(video_id: str):
     chunks_data = chunk_transcript(transcript_segments_with_id, video_id, max_chunk_tokens=250,overlap_tokens=50)
     if not chunks_data:
         logging.warning(f"No chunks generated for {video_id} after transcript fetch. Aborting.")
-    print("\n--- BEGIN SEGMENTED CHUNKS FOR VERIFICATION (from dataUpload) ---")
-    for i, chunk in enumerate(chunks_data):
-        # NOTE: Since count_tokens function is removed, we can't show token count easily here.
-        # If you still want a token count for debugging, you'd need to re-add count_tokens or:
-        # temp_tokens = len(tiktoken.encoding_for_model("gpt-3.5-turbo").encode(chunk['text']))
-        # and import tiktoken here
-        print(f"--- Chunk {i+1} (Start: {chunk.get('start_time'):.2f}s, Text Length: {len(chunk['text'])} chars) ---")
-        print(chunk['text'][:200] + "..." if len(chunk['text']) > 200 else chunk['text'])
-    print("--- END SEGMENTED CHUNKS FOR VERIFICATION ---\n")
+        raise ValueError("No processable chunks found in transcript.")
+    
 
-    return chunks_data
+    #Extract text from chunks for embedding
+    chunk_texts = [chunk['text'] for chunk in chunks_data]
+
+    #generate embeddings for each chunk 
+    try:
+        embeddings = embed_texts(chunk_texts)
+        if not embeddings:
+            logging.error("Embedding generation failed")
+            raise RuntimeError("Embedding generation failed or returned mismatched count.")
+    except Exception as e:
+        logging.errror("Failed to generate embeddings")
+        raise RuntimeError(f"Failed to generate embeddings {e}")
+
+
+    #add embeddings to chunk dictionary
+    for i, chunk in enumerate(chunks_data):
+        chunk['embedding'] = ebmeddings[i]
+
+
+    #combine all data for mongoDB
+    fomatted_document = {
+        # "_id": ObjectId(), # MongoDB will generate this if not provided, often better to let it
+        "video_id": video_id,
+        "fullTranscript": full_transcript_text,
+        "chunks" = chunks_data  
+    }
+
+    """
+    #save entire document by calling a function in mongo.py
+    try:
+        inserted_id = #function for instering(formatted_document)
+        if inserted_id:
+            logging.info("Successful insert of document to database")
+            return
+        else:
+            logging.error(f"Failed to save data for video id")
+            raise RuntimeError("Database Save error")
+    except Exception as e:
+        logging.error(f"Error during DB save for video")
+        raise RuntimeError(f"Database save error")
+        """
+
+
+
 
 
 if __name__ == "__main__":
