@@ -18,7 +18,7 @@ def upload_video():
 
     try:
         # result = dataUpload(video_id)
-        return jsonify({"chatId": "Dylan"}), 200 #just for testing
+        return jsonify({"chatId": "Dylan"}), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -26,12 +26,16 @@ def upload_video():
 def handle_chat():
     data = request.json
     question = data.get("question")
+    chat_id = data.get("chatId")
+    video_id = data.get("youtubeId")
 
     if not question:
         return jsonify({"error": "Missing question"}), 400
+    if not chat_id or not video_id:
+        return jsonify({"error": "Missing chatId or youtubeId"}), 400
 
     try:
-        response = chat(question)
+        response = chat(question, chat_id, video_id)
         return jsonify({"answer": response}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -1,4 +1,4 @@
-import { Github, Linkedin } from "lucide-react";
+import { Github, Linkedin, Globe } from "lucide-react";
 
 export const About = () => {
   return (
@@ -83,6 +83,13 @@ export const About = () => {
               >
                 <Linkedin className="w-5 h-5 hover:text-primary transition" />
               </a>
+              <a
+                href="https://rishik-portfolio-chi.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Globe className="w-5 h-5 hover:text-primary transition" />
+              </a>
             </div>
           </div>
 
@@ -103,6 +110,13 @@ export const About = () => {
                 rel="noopener noreferrer"
               >
                 <Linkedin className="w-5 h-5 hover:text-primary transition" />
+              </a>
+              <a
+                href="https://dylan-toriello.github.io/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Globe className="w-5 h-5 hover:text-primary transition" />
               </a>
             </div>
           </div>
