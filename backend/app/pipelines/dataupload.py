@@ -30,14 +30,13 @@ def chunk_transcript(raw_segments: list[dict], video_id: str, max_chunk_tokens: 
         logging.warning("No raw segments provided for chunking")
         return []
     
-    #prepare raw segments as langchain objects
     documents =[]
     for i, segment in enumerate(raw_segments):
         segment_metadata = {
             "video_id" : video_id,
             "segment_index": i,
-            "start_time_original": segment['start'], # Keep original start time
-            "duration_original": segment['duration'], # Keep original duration
+            "start_time_original": segment['start'], 
+            "duration_original": segment['duration'], 
         }
         documents.append(Document(page_content=segment['text'], metadata=segment_metadata))
 
@@ -74,7 +73,7 @@ def chunk_transcript(raw_segments: list[dict], video_id: str, max_chunk_tokens: 
 
 
 def dataUpload(video_id: str):
-    full_transcript = raw_segments = get_Transcript(video_id)
+    raw_segments = get_Transcript(video_id)
 
     if not raw_segments:
         logging.warning("No Transcripts could be found")
@@ -132,13 +131,9 @@ def dataUpload(video_id: str):
         raise RuntimeError(f"Database save error")
         """
 
-
-
-
-
-if __name__ == "__main__":
-    test_video_id = "ua-CiDNNj30"
-    start_time = time.time()  
-    chunks_data = dataUpload(test_video_id)
-    duration = time.time() - start_time
-    logging.info(f"Transcript chunked in {duration:.2f} seconds.")
+# if __name__ == "__main__":
+#     test_video_id = "ua-CiDNNj30"
+#     start_time = time.time()  
+#     chunks_data = dataUpload(test_video_id)
+#     duration = time.time() - start_time
+#     logging.info(f"Transcript chunked in {duration:.2f} seconds.")

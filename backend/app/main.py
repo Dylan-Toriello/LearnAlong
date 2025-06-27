@@ -18,7 +18,7 @@ def upload_video():
 
     try:
         # result = dataUpload(video_id)
-        return jsonify({"chatId": "Dylan"}), 200 
+        return jsonify({"chatId": video_id}), 200 #Just for testing
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

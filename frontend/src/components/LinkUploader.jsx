@@ -6,41 +6,54 @@ export const LinkUploader = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      const videoId = getYouTubeId(url);
+    const videoId = getYouTubeId(url);
 
-      if (!videoId) {
-        alert("Invalid YouTube URL");
-        return;
+    if (!videoId) {
+      alert("Invalid YouTube URL");
+      return;
+    }
+
+    navigate("/loading");
+
+    const startTime = Date.now();
+
+    try {
+      const res = await fetch("http://127.0.0.1:5000/upload_transcript", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ youtubeId: videoId }),
+      });
+
+      const data = await res.json();
+      const elapsedTime = Date.now() - startTime;
+
+      const remainingTime = 5000 - elapsedTime;
+      if (remainingTime > 0) {
+        await new Promise((resolve) => setTimeout(resolve, remainingTime));
       }
 
-      try {
-        const res = await fetch("http://127.0.0.1:5000/upload_transcript", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ youtubeId: videoId }),
-        });
+      if (data.chatId) {
+        const oldYoutubeId = sessionStorage.getItem("youtubeId");
+        sessionStorage.removeItem("youtubeId");
+        sessionStorage.removeItem("chatId");
+        sessionStorage.removeItem(`chatMessages_${oldYoutubeId}`);
 
-        const data = await res.json();
-
-        if (data.chatId) {
-          const oldYoutubeId = sessionStorage.getItem("youtubeId");
-          sessionStorage.removeItem("youtubeId");
-          sessionStorage.removeItem("chatId");
-          sessionStorage.removeItem(`chatMessages_${oldYoutubeId}`);
-
-          sessionStorage.setItem("youtubeId", videoId);
-          sessionStorage.setItem("chatId", data.chatId);
-          navigate("/watch");
-        } else {
-          alert("Could not start session");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Server error starting session");
+        sessionStorage.setItem("youtubeId", videoId);
+        sessionStorage.setItem("chatId", data.chatId);
+        navigate("/watch");
+      } else {
+        alert("Could not start session");
+        navigate("/"); 
       }
-    };
+    } catch (err) {
+      console.error(err);
+      alert("Server error starting session");
+      navigate("/"); 
+    }
+  };
+
 
     const getYouTubeId = (url) => {
         try {

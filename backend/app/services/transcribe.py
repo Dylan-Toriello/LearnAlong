@@ -26,7 +26,6 @@ def get_Transcript(video_id):
     except Exception as e:
         logging.error(f"Failed to fetch transcript: {e}")
         return None
-"""
+
 if __name__ == "__main__":
-    get_Transcript(video_id="ua-CiDNNj30")
-    """
+    get_Transcript(video_id="YQHsXMglC9A")

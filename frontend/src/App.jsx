@@ -6,6 +6,7 @@ import { Watch } from "./pages/Watch";
 import { Footer } from "./components/Footer";
 import { QuizPage } from "./pages/Quiz";
 import { ScrollToTop } from "./components/ScrollToTop";
+import Loader from "./pages/Loading";
 
 function AppWrapper() {
   const location = useLocation();
@@ -20,6 +21,7 @@ function AppWrapper() {
           <Route path="/about" element={<About />} />
           <Route path="/watch" element={<Watch />} />
           <Route path = "/quiz" element= {<QuizPage />} />
+          <Route path = "/loading" element= {<Loader />} />
         </Routes>
       </div>
       <Footer />
