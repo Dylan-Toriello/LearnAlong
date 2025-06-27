@@ -10,9 +10,7 @@ def chat(question, chatId, videoId):
      context = collect_previous_chats(chatId)
      question_embedding = embed_texts([question])[0]
      chunks = vector_search_chunks(question_embedding, videoId)
-     print(chunks)
-     answer = return_answer(context, chunks, question)
-     # send_chat_to_db(question, answer, chatId)
+     answer = return_answer(context, chunks, question_embedding)
      return answer
 
 def return_answer(context, chunks, question):
@@ -21,22 +19,12 @@ def return_answer(context, chunks, question):
      return answer
 
 def collect_previous_chats(chatId):
-    doc = chats_collection.find_one({"chatId": chatId})
-    if not doc or "messages" not in doc:
-          return []
-
-    sorted_messages = sorted(
-                                doc["messages"],
-                                key=lambda m: m.get("timestamp", datetime.min)
-                            )
-    last_messages = sorted_messages[-10:]
-    context = []
-    for msg in last_messages:
-        if "user" in msg:
-            context.append({"role": "user", "content": msg["user"]})
-        if "ai" in msg:
-            context.append({"role": "assistant", "content": msg["ai"]})
-    return context
+     chats = list(chats_collection.find({"chatId": chatId}).sort("timestamp", -1).limit(5))
+     context = []
+     for c in reversed(chats):  
+          context.append({"role": "user", "content": c["question"]})
+          context.append({"role": "assistant", "content": c["answer"]})
+     return context
 
 
 def send_chat_to_db(question, answer, chatId):
