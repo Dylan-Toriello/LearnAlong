@@ -3,6 +3,7 @@ from app.pipelines.dataupload import dataUpload
 from app.pipelines.chat import chat
 from app.pipelines.quiz import quiz
 from flask_cors import CORS
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -20,6 +21,7 @@ def upload_video():
         new_session_doc = {
             "youtubeId": video_id,
             "messages": []
+            "createdAt": datetime.utcnow()
         }
         result = chats_collection.insert_one(new_session_doc)
         new_id = str(result.inserted_id) #convert objectid to string since returning via JSON
