@@ -40,14 +40,14 @@ export const LinkUploader = () => {
         sessionStorage.removeItem("chatId");
         sessionStorage.removeItem(`chatMessages_${oldYoutubeId}`);
 
-        sessionStorage.setItem("youtubeId", videoId);
+        sessionStorage.setItem("videoId", videoId);
         sessionStorage.setItem("chatId", data.chatId);
         navigate("/watch");
       } else {
         alert("Could not start session");
         navigate("/"); 
       }
-    } catch (err) {
+    } catch (err) {J
       console.error(err);
       alert("Server error starting session");
       navigate("/"); 

@@ -7,11 +7,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-
 @app.route("/upload_transcript", methods=["POST"])
 def upload_video():
     data = request.json
-    video_id = data.get("youtubeId")
+    video_id = data.get("videoId")
 
     if not video_id:
         return jsonify({"error": "Missing video_id"}), 400
@@ -43,14 +42,17 @@ def handle_chat():
 @app.route("/quiz", methods=["POST"])
 def handle_quiz():
     data = request.json
-    video_id = data.get("video_id")
+    video_id = data.get("videoId")
+    chat_id = data.get("chatId")
 
     if not video_id:
         return jsonify({"error": "Missing video_id"}), 400
-
+    if not chat_id:
+        return jsonify({"error": "Missing chat_id"}), 400
+    
     try:
-        quiz_data = quiz(video_id)
-        return jsonify({"quiz": quiz_data}), 200
+        normal, reinforce = quiz(chat_id, video_id)
+        return jsonify({"normal": normal, "reinforce": reinforce}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

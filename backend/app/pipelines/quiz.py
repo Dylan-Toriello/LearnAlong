@@ -1,10 +1,9 @@
 from app.db.mongo import db
-from app.services.vectorization import embed_texts
 from app.services.llm import build_prompt_quiz_transcript, query_llm, build_prompt_quiz_reinforce
 from app.services.transcribe import get_Transcript
+from datetime import datetime
 
 chats_collection = db["chats"]
-transcript_collection = db["transcript"]
 
 def quiz(chatId, videoId):
     chats = collect_previous_chats(chatId)
@@ -26,9 +25,19 @@ def return_reinforce_questions(chats):
     return normal_questions
 
 def collect_previous_chats(chatId):
-     chats = list(chats_collection.find({"chatId": chatId}).sort("timestamp", -1))
-     context = []
-     for c in reversed(chats):  
-          context.append({"role": "user", "content": c["question"]})
-          context.append({"role": "assistant", "content": c["answer"]})
-     return context
+    doc = chats_collection.find_one({"chatId": chatId})
+    if not doc or "messages" not in doc:
+          return []
+
+    sorted_messages = sorted(
+                                doc["messages"],
+                                key=lambda m: m.get("timestamp", datetime.min)
+                            )
+    last_messages = sorted_messages[-10:]
+    context = []
+    for msg in last_messages:
+        if "user" in msg:
+            context.append({"role": "user", "content": msg["user"]})
+        if "ai" in msg:
+            context.append({"role": "assistant", "content": msg["ai"]})
+    return context
