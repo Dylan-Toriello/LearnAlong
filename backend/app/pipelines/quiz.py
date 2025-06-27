@@ -9,9 +9,38 @@ def quiz(chatId, videoId):
     chats = collect_previous_chats(chatId)
     transcript = [segment['text'] for segment in get_Transcript(videoId)]
 
-    normal_questions = return_transcript_questions(transcript)
-    reinforce_questions = return_reinforce_questions(chats)
+    # normal_questions = return_transcript_questions(transcript)
+    # reinforce_questions = return_reinforce_questions(chats)
+    normal_questions = [
+        {
+            "id": "q1",
+            "question": "What is the main topic discussed in the video?",
+            "options": ["Artificial Intelligence", "Quantum Physics", "Photosynthesis", "World War II"],
+            "answer": "Artificial Intelligence"
+        },
+        {
+            "id": "q2",
+            "question": "Which of the following is mentioned as a challenge?",
+            "options": ["Data Storage", "Model Accuracy", "Water Scarcity", "Traffic Congestion"],
+            "answer": "Model Accuracy"
+        }
+    ]
 
+    reinforce_questions = [
+        {
+            "id": "r1",
+            "question": "How does the speaker define 'AI alignment'?",
+            "options": ["Making sure AI systems act as intended", "Increasing compute power", "Reducing bias in training data", "Improving GPU performance"],
+            "answer": "Making sure AI systems act as intended"
+        },
+        {
+            "id": "r2",
+            "question": "Which solution was suggested to improve model interpretability?",
+            "options": ["Use of smaller datasets", "Adding more layers", "Feature attribution techniques", "Regularization"],
+            "answer": "Feature attribution techniques"
+        }
+    ]
+    print("Returning")
     return normal_questions, reinforce_questions
 
 def return_transcript_questions(transcript):

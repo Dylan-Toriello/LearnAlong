@@ -94,7 +94,7 @@ export const ChatInterface = () => {
     setShouldAutoScroll(true);
     setTimeout(() => scrollChatToBottom(), 100);
     const chatId = sessionStorage.getItem("chatId");
-    const youtubeId = sessionStorage.getItem("youtubeId");
+    const videoId = sessionStorage.getItem("videoId");
 
     try {
       const response = await fetch("http://127.0.0.1:5000/chat", {
@@ -103,7 +103,7 @@ export const ChatInterface = () => {
         body: JSON.stringify({
           question: userMessage.text,
           chatId,
-          youtubeId,
+          videoId,
         }),
       });
 

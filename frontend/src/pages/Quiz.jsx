@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RotateCw } from "lucide-react"; 
 import { LeaveSessionModal } from "../components/LeaveSessionModal";
@@ -10,53 +10,27 @@ export const QuizPage = () => {
   const [pendingAction, setPendingAction] = useState(null); 
   const navigate = useNavigate();
 
-  const sampleQuestions = [
-    {
-      id: 1,
-      question: "What is React?",
-      options: ["Library", "Framework", "Language", "Tool"],
-      answer: "Library",
-    },
-    {
-      id: 2,
-      question: "What hook is used for state management?",
-      options: ["useRef", "useEffect", "useState", "useContext"],
-      answer: "useState",
-    },
-    {
-      id: 3,
-      question: "What is React?",
-      options: ["Library", "Framework", "Language", "Tool"],
-      answer: "Library",
-    },
-    {
-      id: 4,
-      question: "What is React?",
-      options: ["Library", "Framework", "Language", "Tool"],
-      answer: "Library",
-    },
-    {
-      id: 5,
-      question: "What is React?",
-      options: ["Library", "Framework", "Language", "Tool"],
-      answer: "Library",
-    },
-    {
-      id: 6,
-      question: "What is React?",
-      options: ["Library", "Framework", "Language", "Tool"],
-      answer: "Library",
-    }
-  ];
+  const [normalQuestions, setNormalQuestions] = useState([]);
+  const [reinforcementQuestions, setReinforcementQuestions] = useState([]);
 
-  const reinforcementQuestions = [
-    {
-      id: 7,
-      question: "How do you pass props in React?",
-      options: ["via state", "via Redux", "via attributes", "via hooks"],
-      answer: "via attributes",
-    },
-  ];
+  useEffect(() => {
+    try {
+      const normalRaw = sessionStorage.getItem("normal_questions");
+      const reinforceRaw = sessionStorage.getItem("reinforce_questions");
+
+      const normal = normalRaw ? JSON.parse(normalRaw) : [];
+      const reinforce = reinforceRaw ? JSON.parse(reinforceRaw) : [];
+
+      setNormalQuestions(Array.isArray(normal) ? normal : []);
+      setReinforcementQuestions(Array.isArray(reinforce) ? reinforce : []);
+    } catch (err) {
+      console.error("Error parsing quiz questions from sessionStorage:", err);
+      setNormalQuestions([]);
+      setReinforcementQuestions([]);
+    }
+  }, []);
+
+
 
   const handleAnswer = (qId, option) => {
     setSelectedAnswers((prev) => ({
@@ -85,43 +59,48 @@ export const QuizPage = () => {
     setSelectedAnswers({});
   };
 
-  const renderQuestions = (questions) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 md:px-[64px] mt-8">
-    {questions.map((q) => (
-      <div
-        key={q.id}
-        className="p-6 border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all bg-white min-h-[260px] flex flex-col justify-between"
-      >
-        <h4 className="font-semibold mb-4 text-slate-800 text-lg leading-snug">{q.question}</h4>
-        <ul className="space-y-3">
-          {q.options.map((opt, idx) => {
-            const isSelected = selectedAnswers[q.id] === opt;
-            const isCorrect = opt === q.answer;
-            const showAnswer = selectedAnswers[q.id];
+const renderQuestions = (questions) => {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 md:px-[64px] mt-8">
+      {questions.map((q) => (
+        <div
+          key={q.id}
+          className="p-6 border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all bg-white min-h-[260px] flex flex-col justify-between"
+        >
+          <h4 className="font-semibold mb-4 text-slate-800 text-lg leading-snug">
+            {q.question}
+          </h4>
+          <ul className="space-y-3">
+            {q.options.map((opt, idx) => {
+              const isSelected = selectedAnswers[q.id] === opt;
+              const isCorrect = opt === q.answer;
+              const showAnswer = selectedAnswers[q.id];
 
-            return (
-              <li
-                key={idx}
-                onClick={() => handleAnswer(q.id, opt)}
-                className={`px-4 py-3 rounded-lg w-full text-center font-medium cursor-pointer border transition-all duration-150 ${
-                  showAnswer
-                    ? isCorrect
-                      ? "bg-green-100 border-green-400 text-green-800"
-                      : isSelected
-                      ? "bg-red-100 border-red-400 text-red-800"
-                      : "bg-slate-100 border-slate-200 text-slate-800"
-                    : "text-slate-800 border-slate-300 hover:bg-slate-100"
-                }`}
-              >
-                {opt}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    ))}
-  </div>
-);
+              return (
+                <li
+                  key={idx}
+                  onClick={() => handleAnswer(q.id, opt)}
+                  className={`px-4 py-3 rounded-lg w-full text-center font-medium cursor-pointer border transition-all duration-150 ${
+                    showAnswer
+                      ? isCorrect
+                        ? "bg-green-100 border-green-400 text-green-800"
+                        : isSelected
+                        ? "bg-red-100 border-red-400 text-red-800"
+                        : "bg-slate-100 border-slate-200 text-slate-800"
+                      : "text-slate-800 border-slate-300 hover:bg-slate-100"
+                  }`}
+                >
+                  {opt}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 
   return (
     <div className="min-h-screen py-8 bg-base-100 flex flex-col justify-between px-5 md:px-[64px]">
@@ -159,7 +138,7 @@ export const QuizPage = () => {
         </div>
 
         {activeTab === "quiz"
-          ? renderQuestions(sampleQuestions)
+          ? renderQuestions(normalQuestions)
           : renderQuestions(reinforcementQuestions)}
       </div>
 

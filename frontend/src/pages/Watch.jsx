@@ -4,11 +4,13 @@ import { VideoPlayer } from "../components/VideoPlayer";
 import { ChatInterface } from "../components/Chatbox";
 import { ActionButtons } from "../components/ActionsButtons";
 import { LeaveSessionModal } from "../components/LeaveSessionModal";
+import Loader from "../components/Loading";
 
 export const Watch = () => {
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [shouldNavigateBack, setShouldNavigateBack] = useState(false);
   const [pendingAction, setPendingAction] = useState(null); 
+  const [loading, setLoading] = useState(false);
   const shouldForceLeaveRef = useRef(false); 
   const navigate = useNavigate(); 
 
@@ -55,13 +57,15 @@ export const Watch = () => {
     setShowLeaveModal(true);
   };
 
-  const videoId = sessionStorage.getItem("youtubeId");
+  const videoId = sessionStorage.getItem("videoId");
+
+  if (loading) return <Loader />;
 
   return (
     <div className="min-h-[84vh] from-slate-50 pt-8 bg-base-100 px-5 md:px-[64px] overflow-visible">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-end items-center mb-10">
-          <ActionButtons onGoHomeClick={handleGoHomeClick} />
+          <ActionButtons onGoHomeClick={handleGoHomeClick} setLoading={setLoading} />
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">

@@ -26,7 +26,7 @@ def handle_chat():
     data = request.json
     question = data.get("question")
     chat_id = data.get("chatId")
-    video_id = data.get("youtubeId")
+    video_id = data.get("videoId")
 
     if not question:
         return jsonify({"error": "Missing question"}), 400

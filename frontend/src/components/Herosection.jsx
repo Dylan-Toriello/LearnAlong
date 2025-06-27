@@ -1,7 +1,7 @@
 import { LinkUploader } from "./LinkUploader";
 import heroIllustration from "../assets/hero-illustration.png";
 
-export const HeroSection = () => {
+export const HeroSection = ({ setLoading }) => {
   return (
     <section className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 px-6 md:px-12 lg:px-20 py-20 bg-base-100">
       
@@ -13,7 +13,7 @@ export const HeroSection = () => {
           Upload any YouTube video. Chat with an AI to ask questions and take quizzes to reinforce learning.
         </p>
         <div className="flex justify-center lg:justify-start">
-          <LinkUploader />
+          <LinkUploader setLoading={setLoading} />
         </div>
       </div>
 

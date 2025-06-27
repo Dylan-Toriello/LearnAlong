@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const LinkUploader = () => {
+export const LinkUploader = ({ setLoading }) => {
   const [url, setUrl] = useState("");
   const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ export const LinkUploader = () => {
       return;
     }
 
-    navigate("/loading");
+    setLoading(true);
 
     const startTime = Date.now();
 
@@ -23,7 +23,7 @@ export const LinkUploader = () => {
       const res = await fetch("http://127.0.0.1:5000/upload_transcript", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ youtubeId: videoId }),
+        body: JSON.stringify({ videoId: videoId }),
       });
 
       const data = await res.json();
@@ -36,20 +36,25 @@ export const LinkUploader = () => {
 
       if (data.chatId) {
         const oldYoutubeId = sessionStorage.getItem("youtubeId");
-        sessionStorage.removeItem("youtubeId");
+        sessionStorage.removeItem("videoId");
         sessionStorage.removeItem("chatId");
         sessionStorage.removeItem(`chatMessages_${oldYoutubeId}`);
+        sessionStorage.removeItem("normal_questions")
+        sessionStorage.removeItem("reinforce_questions")
 
         sessionStorage.setItem("videoId", videoId);
         sessionStorage.setItem("chatId", data.chatId);
+        setLoading(false);
         navigate("/watch");
       } else {
         alert("Could not start session");
+        setLoading(false);
         navigate("/"); 
       }
-    } catch (err) {J
+    } catch (err) {
       console.error(err);
       alert("Server error starting session");
+      setLoading(false);
       navigate("/"); 
     }
   };
