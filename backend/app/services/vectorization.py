@@ -1,8 +1,6 @@
 from sentence_transformers import SentenceTransformer
 import logging
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 embedding_model = None
 
 def get_embedding_model():   

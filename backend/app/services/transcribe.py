@@ -6,8 +6,14 @@ It took approximately 1.20s everytime.
 from youtube_transcript_api import YouTubeTranscriptApi
 import logging
 import time
+from googleapiclient.discovery import build
+from dotenv import load_dotenv
+import os
 
-logging.basicConfig(level=logging.INFO)
+load_dotenv()
+
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
 
 def get_Transcript(video_id):
     start_time = time.time()  
@@ -22,6 +28,23 @@ def get_Transcript(video_id):
     except Exception as e:
         logging.error(f"Failed to fetch transcript: {e}")
         return None
+    
+def get_video_metadata(video_id):
+    response = youtube.videos().list(
+        part="snippet,contentDetails",
+        id=video_id
+    ).execute()
+
+    if not response["items"]:
+        return None
+
+    item = response["items"][0]["snippet"]
+    return {
+        "title": item.get("title", ""),
+        "description": item.get("description", ""),
+        "channel": item.get("channelTitle", ""),
+        "published_at": item.get("publishedAt", "")
+    }
 
 if __name__ == "__main__":
-    get_Transcript(video_id="YQHsXMglC9A")
+    print(get_video_metadata(video_id="YQHsXMglC9A"))

@@ -4,6 +4,7 @@ import tiktoken
 import time
 
 from ..services.transcribe import get_Transcript
+from ..services.transcribe import get_video_metadata
 from ..services.vectorization import embed_texts
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
@@ -12,11 +13,9 @@ from datetime import datetime
 
 chats_collection = db["chats"]
 transcripts_db = db["transcripts"]
+videos_db = db['videos']
 
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-def format_document_for_db(chunks_data, video_id) -> list[dict]:
+def format_document_for_db(chunks_data, video_id):
     mongo_documents = []
     for i, chunk in enumerate(chunks_data):
         vector = {
@@ -38,7 +37,6 @@ def chunk_transcript(raw_segments: list[dict], video_id: str, max_chunk_tokens: 
     documents = []
     for i, segment in enumerate(raw_segments):
         segment_metadata = {
-            "video_id": video_id,
             "segment_index": i,
             "segment_start_time": segment['start'],       
             "segment_end_time": segment['start'] + segment['duration'],
@@ -65,6 +63,21 @@ def chunk_transcript(raw_segments: list[dict], video_id: str, max_chunk_tokens: 
 
     return processed_chunks
 
+def store_video_metadata(video_id, video_metadata):
+    videos_db.update_one(
+        {"video_id": video_id},
+        {
+            "$set": {
+                "video_id": video_id,
+                "title": video_metadata.get("title", ""),
+                "description": video_metadata.get("description", ""),
+                "channel": video_metadata.get("channel", ""),
+                "published_at": video_metadata.get("published_at", "")
+            }
+        },
+        upsert=True
+    )
+
 def dataUpload(video_id: str):
     existing = transcripts_db.find_one({ "video_id": video_id })
 
@@ -81,6 +94,8 @@ def dataUpload(video_id: str):
         return new_chat_id
 
     raw_segments = get_Transcript(video_id)
+    video_metadata = get_video_metadata(video_id)
+    store_video_metadata(video_id, video_metadata)
 
     if not raw_segments:
         logging.warning("No Transcripts could be found")

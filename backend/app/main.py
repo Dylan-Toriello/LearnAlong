@@ -35,28 +35,9 @@ def handle_chat():
     if not chat_id or not video_id:
         return jsonify({"error": "Missing chatId or youtubeId"}), 400
 
-    try:
-        session_obj_id = ObjectId(chat_id)
-        
-        chats_collection.update_one({
-            {"_id": session_obj_id},
-            {"$push": {"messages": {
-                "role": "user",
-                "content" : question,
-            }},
-            }
-        })
-        
-        response = chat(question, chat_id, video_id)
-        chat_sessions_collection.update_one(
-            {"_id": session_obj_id},
-            {"$push": {"messages": {
-                "role": "assistant",
-                "content": answer,
-            }}
-            }
-        )
-        return jsonify({"answer": response}), 200
+    try:    
+        answer = chat(question, chat_id, video_id)
+        return jsonify({"answer": answer}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
