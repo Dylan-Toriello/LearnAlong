@@ -7,14 +7,10 @@ export const ActionButtons = ({ onGoHomeClick, setLoading }) => {
   const handleQuizClick = async () => {
     const chatId = sessionStorage.getItem("chatId");
     const videoId = sessionStorage.getItem("videoId");
+
     const existingNormal = sessionStorage.getItem("normal_questions");
-    if (existingNormal) {
-      navigate("/quiz");
-      return;
-    }
 
     setLoading(true);
-
     const startTime = Date.now();
 
     try {
@@ -28,15 +24,19 @@ export const ActionButtons = ({ onGoHomeClick, setLoading }) => {
 
       const data = await res.json();
       const elapsedTime = Date.now() - startTime;
-
       const remainingTime = 5000 - elapsedTime;
+
       if (remainingTime > 0) {
         await new Promise((resolve) => setTimeout(resolve, remainingTime));
       }
 
       if (res.ok) {
-        sessionStorage.setItem("normal_questions", JSON.stringify(data.normal));
-        sessionStorage.setItem("reinforce_questions", JSON.stringify(data.reinforce));
+        if (!existingNormal) {
+          sessionStorage.setItem("normal_questions", JSON.stringify(data.normal));
+          sessionStorage.setItem("reinforce_questions", JSON.stringify(data.reinforce));
+        } else {
+          sessionStorage.setItem("reinforce_questions", JSON.stringify(data.reinforce));
+        }
         setLoading(false);
         navigate("/quiz");
       } else {

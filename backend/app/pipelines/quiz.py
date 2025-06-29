@@ -10,6 +10,7 @@ def quiz(chatId, videoId):
     transcript = [segment['text'] for segment in get_Transcript(videoId)]
 
     normal_questions = return_transcript_questions(transcript)
+    print(chats)
     if chats:
         reinforce_questions = return_reinforce_questions(chats)
     else:

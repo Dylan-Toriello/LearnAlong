@@ -85,10 +85,11 @@ def build_prompt_quiz_transcript(transcript_segments: list[str]) -> str:
     system_prompt = (
         "You are a helpful assistant that creates quiz questions to help users reinforce their understanding "
         "of a YouTube video based on the transcript segments below.\n"
-        "Generate exactly 5 diverse multiple-choice questions.\n"
+        "Generate diverse multiple-choice questions.\n"
+        "Decide on the number of questions based on the length of the transcript and the content present but never exceed 10"
         "Just give an array of the questions like this no text or anything before it or after it strictly"
         "Each question must follow this JSON format strictly:\n\n"
-        "Also the correct answer field needs to and int from 0 to however manu options and should be index of the correct option"
+        "The answer field in the json should be the actual answer exactly as it is in the options"
         "{\n"
         '  "id": "q1",\n'
         '  "question": "What is the main topic discussed in the video?",\n'
@@ -113,10 +114,11 @@ def build_prompt_quiz_transcript(transcript_segments: list[str]) -> str:
 def build_prompt_quiz_reinforce(chats: list[dict]) -> str:
     system_prompt = (
         "You are a helpful assistant that creates reinforcement quiz questions based on a user's past chat history.\n"
-        "Generate exactly 5 quiz questions based on what the user and assistant discussed.\n"
+        "Generate quiz questions based on what the user and assistant discussed.\n"
+        "Decide on the number of questions based on what the chat contains and how much the user talked with the assistant but never exceed 10 questions"
         "Just give an array of the questions like this no text or anything before it or after it strictly"
         "Each question must follow this JSON format strictly:\n\n"
-         "Also the correct answer field needs to and int from 0 to however manu options and should be index of the correct option"
+        "The answer field in the json should be the actual answer exactly as it is in the options"
         "{\n"
         '  "id": "r1",\n'
         '  "question": "How does the speaker define AI alignment?",\n'

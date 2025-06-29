@@ -59,7 +59,17 @@ export const QuizPage = () => {
     setSelectedAnswers({});
   };
 
-const renderQuestions = (questions) => {
+const renderQuestions = (questions, type) => {
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="text-center text-slate-800 text-lg mt-8">
+        {type === "reinforcement"
+          ? "You have not interacted with the AI assistant yet. Try asking some questions!"
+          : "No questions available for this quiz."}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5 md:px-[64px] mt-8">
       {questions.map((q) => (
@@ -102,6 +112,7 @@ const renderQuestions = (questions) => {
 };
 
 
+
   return (
     <div className="min-h-screen py-8 bg-base-100 flex flex-col justify-between px-5 md:px-[64px]">
       <div>
@@ -137,9 +148,9 @@ const renderQuestions = (questions) => {
         </div>
         </div>
 
-        {activeTab === "quiz"
-          ? renderQuestions(normalQuestions)
-          : renderQuestions(reinforcementQuestions)}
+       {activeTab === "quiz"
+          ? renderQuestions(normalQuestions, "normal")
+          : renderQuestions(reinforcementQuestions, "reinforcement")}
       </div>
 
       <div className="mt-12 px-6 md:px-20 pt-8 pb-2 flex justify-between items-center w-full">

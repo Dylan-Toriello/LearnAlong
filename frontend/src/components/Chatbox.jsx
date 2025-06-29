@@ -12,7 +12,7 @@ import {
 
 export const ChatInterface = () => {
   const [messages, setMessages] = useState(() => {
-    const youtubeId = sessionStorage.getItem("youtubeId");
+    const youtubeId = sessionStorage.getItem("videoId");
     const saved = youtubeId && sessionStorage.getItem(`chatMessages_${youtubeId}`);
       if (saved) return JSON.parse(saved);
       return [
@@ -23,8 +23,9 @@ export const ChatInterface = () => {
         },
       ];
   });
+
   useEffect(() => {
-    const youtubeId = sessionStorage.getItem("youtubeId");
+    const youtubeId = sessionStorage.getItem("videoId");
     if (youtubeId) {
       const MAX_MESSAGES = 500;
       const trimmedMessages = messages.slice(-MAX_MESSAGES);
