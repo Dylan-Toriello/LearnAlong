@@ -23,9 +23,7 @@ function AppWrapper() {
         </Routes>
       </div>
       <Footer />
-    </div>
-   
-    
+    </div>    
   );
 }
 

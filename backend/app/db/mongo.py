@@ -8,6 +8,6 @@ load_dotenv()
 try:
     client = MongoClient(os.getenv("MONGO_URI"), server_api=ServerApi('1'))
     client.admin.command("ping")
-    db = client["LearnAlong"]
+    db = client["learnalong"]
 except Exception as e:
     print("Failed to connect to MongoDB:", e)

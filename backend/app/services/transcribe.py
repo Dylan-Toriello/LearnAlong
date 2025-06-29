@@ -16,11 +16,7 @@ def get_Transcript(video_id):
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
         duration = time.time() - start_time
         logging.info(f"Transcript fetched in {duration:.2f} seconds.")
-
-        for segment in transcript:
-            print(segment)
-            break
-
+        
         return transcript
 
     except Exception as e:

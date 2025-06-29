@@ -8,7 +8,7 @@ embedding_model = None
 def get_embedding_model():   
     global embedding_model
     if embedding_model is None:
-        model_name = "all-MiniLM-L6-v2" #Is returning a 384 length embeding
+        model_name = "all-MiniLM-L6-v2"
         try:
             embedding_model = SentenceTransformer(model_name) 
         except Exception as e:

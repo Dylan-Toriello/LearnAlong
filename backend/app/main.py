@@ -3,11 +3,11 @@ from app.pipelines.dataupload import dataUpload
 from app.pipelines.chat import chat
 from app.pipelines.quiz import quiz
 from flask_cors import CORS
-import datetime
+
 
 app = Flask(__name__)
 CORS(app)
-chats_collection = db["chats"]
+
 
 @app.route("/upload_transcript", methods=["POST"])
 def upload_video():
@@ -18,15 +18,8 @@ def upload_video():
         return jsonify({"error": "Missing video_id"}), 400
 
     try:
-        new_session_doc = {
-            "youtubeId": video_id,
-            "messages": []
-            "createdAt": datetime.utcnow()
-        }
-        result = chats_collection.insert_one(new_session_doc)
-        new_id = str(result.inserted_id) #convert objectid to string since returning via JSON
-        # result = dataUpload(video_id)
-        return jsonify({"chatId": new_id}), 200 
+        result = dataUpload(video_id)
+        return jsonify({"chatId": result}), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -45,7 +38,6 @@ def handle_chat():
     try:
         session_obj_id = ObjectId(chat_id)
         
-        #push the users message to the database (Before getting the answer)
         chats_collection.update_one({
             {"_id": session_obj_id},
             {"$push": {"messages": {

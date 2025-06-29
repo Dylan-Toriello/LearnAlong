@@ -3,6 +3,8 @@ from app.services.vectorization import embed_texts
 from app.services.llm import build_prompt_chat, query_llm
 from datetime import datetime
 
+#6860cd0956109ca684753243 for testing purposes
+
 chats_collection = db["chats"]
 transcript_collection = db["transcript"]
 
