@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 export const LinkUploader = ({ setLoading }) => {
   const [url, setUrl] = useState("");
   const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +21,7 @@ export const LinkUploader = ({ setLoading }) => {
     const startTime = Date.now();
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/upload_transcript", {
+      const res = await fetch(`${backendUrl}/upload_transcript`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ videoId: videoId }),

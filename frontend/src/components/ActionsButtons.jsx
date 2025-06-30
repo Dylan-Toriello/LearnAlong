@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export const ActionButtons = ({ onGoHomeClick, setLoading }) => {
   const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const handleQuizClick = async () => {
     const chatId = sessionStorage.getItem("chatId");
@@ -14,7 +15,7 @@ export const ActionButtons = ({ onGoHomeClick, setLoading }) => {
     const startTime = Date.now();
 
     try {
-      const res = await fetch("http://localhost:5000/quiz", {
+      const res = await fetch(`${backendUrl}/quiz`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
