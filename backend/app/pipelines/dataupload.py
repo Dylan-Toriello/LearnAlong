@@ -105,16 +105,16 @@ def dataUpload(video_id: str):
     # Add video_id to each segment for potential use by chunk_id generation
     transcript_segments_with_id = [{**s, 'video_id': video_id} for s in raw_segments]
 
-    # #chunk the transcript using langchain splitter
+    #chunk the transcript using langchain splitter
     chunks_data = chunk_transcript(transcript_segments_with_id, video_id, max_chunk_tokens=250,overlap_tokens=50)
     if not chunks_data:
         logging.warning(f"No chunks generated for {video_id} after transcript fetch. Aborting.")
         raise ValueError("No processable chunks found in transcript.")
 
-    # #Extract text from chunks for embedding
+    #Extract text from chunks for embedding
     chunk_texts = [chunk['text'] for chunk in chunks_data]
 
-    # #generate embeddings for each chunk 
+    #generate embeddings for each chunk 
     try:
         embeddings = embed_texts(chunk_texts)
         if not embeddings:
@@ -124,8 +124,7 @@ def dataUpload(video_id: str):
         logging.error("Failed to generate embeddings")
         raise RuntimeError(f"Failed to generate embeddings {e}")
 
-
-    # #add embeddings to chunk dictionary
+    #add embeddings to chunk dictionary
     for i, chunk in enumerate(chunks_data):
         chunk['embedding'] = embeddings[i]
 

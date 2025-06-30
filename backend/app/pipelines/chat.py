@@ -1,11 +1,8 @@
 from bson import ObjectId
-
 from app.db.mongo import db
 from app.services.vectorization import embed_texts
 from app.services.llm import build_prompt_chat, query_llm
 from datetime import datetime
-
-#6860e981c32e3bfd5d8735e0 for testing purposes
 
 chats_collection = db["chats"]
 transcript_collection = db["transcripts"]

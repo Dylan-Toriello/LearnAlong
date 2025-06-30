@@ -62,7 +62,7 @@ export const QuizPage = () => {
 const renderQuestions = (questions, type) => {
   if (!questions || questions.length === 0) {
     return (
-      <div className="text-center text-slate-800 text-lg mt-8">
+      <div className="text-center text-lg mt-8">
         {type === "reinforcement"
           ? "You have not interacted with the AI assistant yet. Try asking some questions!"
           : "No questions available for this quiz."}

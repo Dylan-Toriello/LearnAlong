@@ -14,8 +14,8 @@ export const FeatureList = () => {
     },
     {
       icon: <ListVideo className="w-6 h-6 text-primary" />,
-      title: "Learn in Chunks",
-      description: "Break videos into smaller, digestible segments.",
+      title: "Personalized Learning Sessions",
+      description: "Creates a personalized learning experience.",
     },
   ];
 

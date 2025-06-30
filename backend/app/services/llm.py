@@ -12,7 +12,6 @@ headers = {
     "Content-Type": "application/json"
 }
 
-
 def query_llm(prompt):
     payload = {
         "model": "llama3-8b-8192", 
