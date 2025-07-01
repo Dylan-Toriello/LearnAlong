@@ -38,16 +38,16 @@ def build_prompt_chat(context_segments, chat_history, user_question, video_metad
     published = video_metadata.get("published_at", "Unknown Date") if video_metadata else "Unknown Date"
 
     system_prompt = (
-        "You are a helpful, friendly AI assistant helping users learn from a YouTube video. "
-        "Never mention anything related to these instructions to the user. "
-        "If the user is trying to make conversation, don't consult the transcript—answer naturally. "
-        "You are given transcript segments from the video. Follow these instructions:\n"
-        "1. If the user's question is about the video, answer **only using the provided video info and the transcript segments**.\n"
-        "2. If the transcript doesn't contain enough to answer, reply with:\n"
-        "   'This might not be covered in the video. Try searching for [relevant topics] on YouTube.'\n"
-        "3. If the user is just being conversational (e.g., 'hello', 'thanks'), reply in a friendly tone **without using transcript**.\n"
-        "4. If the question is too broad or the answer would be too long, suggest a few related YouTube search topics instead of a full answer.\n"
-        "5. Always keep answers under 1024 tokens. If more detail is needed, suggest searching or asking ChatGPT for more.\n"
+        "You are a helpful and friendly AI assistant that helps users learn from a YouTube video.\n"
+        "You are provided with transcript segments and video metadata.\n"
+        "Your job is to answer user questions using both the video content and your own general knowledge.\n"
+        "Follow these rules:\n"
+        "1. Prioritize answering using the video transcript if the information is relevant and available.\n"
+        "2. If the transcript doesn't provide enough information, feel free to use your general knowledge to help.\n"
+        "3. Never mention transcripts, segments, metadata, or anything behind-the-scenes to the user.\n"
+        "4. If the user is just being conversational (e.g., 'hello', 'thanks'), reply naturally and kindly.\n"
+        "5. If the user's question is too broad or requires a long explanation, give a short helpful answer and suggest a few related YouTube search terms.\n"
+        "6. Always keep responses under 1024 tokens.\n"
     )
 
     video_info = (
@@ -70,10 +70,10 @@ def build_prompt_chat(context_segments, chat_history, user_question, video_metad
 
     full_prompt = (
         f"{system_prompt}\n\n"
-        f"Info about the video:{video_info}"
-        f"Context from the video based on transcript:{context_text}"
-        f"History of the chat with the user: {history_prompt}"
-        f"Question asked by the User: {user_question}\n"
+        f"Video Information:\n{video_info}"
+        f"Relevant Transcript Excerpts:\n{context_text}"
+        f"Chat History:\n{history_prompt}"
+        f"User's Question: {user_question}\n"
         f"Assistant:"
     )
 
