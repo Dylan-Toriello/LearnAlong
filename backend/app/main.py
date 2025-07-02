@@ -6,8 +6,7 @@ from flask_cors import CORS
 
 
 app = Flask(__name__)
-CORS(app)
-
+CORS(app, resources={r"/*": {"origins": "https://learn-along.vercel.app"}}, supports_credentials=True)
 
 @app.route("/upload_transcript", methods=["POST"])
 def upload_video():
