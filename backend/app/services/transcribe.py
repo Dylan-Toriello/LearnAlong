@@ -9,7 +9,7 @@ import time
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
 import os
-from youtube_transcript_api import WebshareProxyConfig
+from youtube_transcript_api.proxies import WebshareProxyConfig
 
 load_dotenv()
 
