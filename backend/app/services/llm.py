@@ -88,7 +88,7 @@ def build_prompt_quiz_transcript(transcript_segments: list[str]) -> str:
         "Decide on the number of questions based on the length of the transcript and the content present but never exceed 10"
         "Just give an array of the questions like this no text or anything before it or after it strictly"
         "Each question must follow this JSON format strictly:\n\n"
-        "The answer field in the json should be the actual answer exactly as it is in the options"
+        "The answer field in the json should be the actual answer exactly as it is in the options spelled out"
         "{\n"
         '  "id": "q1",\n'
         '  "question": "What is the main topic discussed in the video?",\n'

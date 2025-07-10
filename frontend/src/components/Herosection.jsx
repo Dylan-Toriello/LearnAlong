@@ -4,7 +4,6 @@ import heroIllustration from "../assets/hero-illustration.png";
 export const HeroSection = ({ setLoading }) => {
   return (
     <section className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 px-6 md:px-12 lg:px-20 py-20 bg-base-100">
-      
       <div className="w-full lg:w-1/2 text-center lg:text-left space-y-6">
         <h1 className="text-4xl sm:text-5xl font-bold text-primary">
           Learn smarter with video-powered AI

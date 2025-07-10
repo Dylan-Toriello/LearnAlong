@@ -21,7 +21,7 @@ export const LinkUploader = ({ setLoading }) => {
     const startTime = Date.now();
 
     try {
-      const res = await fetch(`${backendUrl}/upload_transcript`, {
+      const res = await fetch(`http://127.0.0.1:5000/upload_transcript`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ videoId: videoId }),
@@ -36,7 +36,7 @@ export const LinkUploader = ({ setLoading }) => {
       }
 
       if (data.chatId) {
-        const oldYoutubeId = sessionStorage.getItem("youtubeId");
+        const oldYoutubeId = sessionStorage.getItem("videoId");
         sessionStorage.removeItem("videoId");
         sessionStorage.removeItem("chatId");
         sessionStorage.removeItem(`chatMessages_${oldYoutubeId}`);

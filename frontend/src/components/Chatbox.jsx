@@ -24,8 +24,6 @@ export const ChatInterface = () => {
       ];
   });
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
   useEffect(() => {
     const youtubeId = sessionStorage.getItem("videoId");
     if (youtubeId) {
@@ -100,7 +98,7 @@ export const ChatInterface = () => {
     const videoId = sessionStorage.getItem("videoId");
 
     try {
-      const response = await fetch(`${backendUrl}/chat`, {
+      const response = await fetch(`http://127.0.0.1:5000/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

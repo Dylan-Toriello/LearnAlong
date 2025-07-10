@@ -9,26 +9,18 @@ import time
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
 import os
-from youtube_transcript_api.proxies import WebshareProxyConfig
 
 load_dotenv()
 
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
-proxy_config = WebshareProxyConfig(
-     proxy_username=os.getenv("PROXY_USERNAME"),
-    proxy_password=os.getenv("PROXY_PASSWORD")
-)
-ytt_api = YouTubeTranscriptApi(proxy_config=proxy_config)
 
 def get_Transcript(video_id):
     start_time = time.time()  
-
     try:
-        transcript = ytt_api.get_transcript(video_id)
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
         duration = time.time() - start_time
-        logging.info(f"Transcript fetched in {duration:.2f} seconds.")
-        
+
         return transcript
 
     except Exception as e:

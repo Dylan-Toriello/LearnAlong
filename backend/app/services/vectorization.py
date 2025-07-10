@@ -21,5 +21,3 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
     except Exception as e:
         logging.error(f"Error generating embeddings for {len(texts)} texts: {e}")
         return []
-
-
